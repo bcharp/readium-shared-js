@@ -22,28 +22,24 @@
  * @constructor
  */
 
-ReadiumSDK.Models.Spread = function(spine, orientation) {
+ReadiumSDK.Models.Spread = function(spine) {
 
-    var self = this;
-
-    this.orientation = orientation;
     this.spine = spine;
 
     this.leftItem = undefined;
     this.rightItem = undefined;
     this.centerItem = undefined;
 
-    var _isSyntheticSpread = true;
+    this.isSyntheticSpread = true;
 
     this.setSyntheticSpread = function(isSyntheticSpread) {
-        _isSyntheticSpread = isSyntheticSpread;
+        this.isSyntheticSpread = isSyntheticSpread;
     };
-
 
     this.openFirst = function() {
 
         if( this.spine.items.length == 0 ) {
-            resetItems();
+            this.resetItems();
         }
         else {
             this.openItem(this.spine.first());
@@ -53,7 +49,7 @@ ReadiumSDK.Models.Spread = function(spine, orientation) {
     this.openLast = function() {
 
         if( this.spine.items.length == 0 ) {
-            resetItems();
+            this.resetItems();
         }
         else {
             this.openItem(this.spine.last());
@@ -62,69 +58,42 @@ ReadiumSDK.Models.Spread = function(spine, orientation) {
 
     this.openItem = function(item) {
 
-        resetItems();
+        this.resetItems();
+        this.setItem(item);
 
-        var position = getItemPosition(item);
-        setItemToPosition(item, position);
+        var neighbourItem = this.getNeighbourItem(item);
 
-        if(position != ReadiumSDK.Models.Spread.POSITION_CENTER) {
-            var neighbour = getNeighbourItem(item);
-            if(neighbour) {
-                var neighbourPos = getItemPosition(neighbour);
-                if(neighbourPos != position && position != ReadiumSDK.Models.Spread.POSITION_CENTER)  {
-                    setItemToPosition(neighbour, neighbourPos);
-                }
-            }
+        if(neighbourItem) {
+            this.setItem(neighbourItem);
         }
     };
 
-    function resetItems() {
+    this.resetItems = function() {
 
-        self.leftItem = undefined;
-        self.rightItem = undefined;
-        self.centerItem = undefined;
-    }
+        this.leftItem = undefined;
+        this.rightItem = undefined;
+        this.centerItem = undefined;
 
-    function setItemToPosition(item, position) {
+    };
 
-        if(position == ReadiumSDK.Models.Spread.POSITION_LEFT) {
-            self.leftItem = item;
-        }
-        else if (position == ReadiumSDK.Models.Spread.POSITION_RIGHT) {
-            self.rightItem = item;
-        }
-        else {
+    this.setItem = function(item) {
 
-            if(position != ReadiumSDK.Models.Spread.POSITION_CENTER) {
-                console.error("Unrecognized position value");
-            }
-
-            self.centerItem = item;
-        }
-
-    }
-
-    function getItemPosition(item) {
-
-        if(!_isSyntheticSpread) {
-            return ReadiumSDK.Models.Spread.POSITION_CENTER;
-        }
-
-        if(!ReadiumSDK.Helpers.isRenditionSpreadPermittedForItem(item, self.orientation)) {
-            return ReadiumSDK.Models.Spread.POSITION_CENTER;
+        if(!this.isSyntheticSpread) {
+            this.centerItem = item;
+            return;
         }
 
         if(item.isLeftPage()) {
-            return ReadiumSDK.Models.Spread.POSITION_LEFT;
+            this.leftItem = item;
         }
-
-        if (item.isRightPage()) {
-            return ReadiumSDK.Models.Spread.POSITION_RIGHT;
+        else if (item.isRightPage()) {
+            this.rightItem = item;
         }
-
-        return ReadiumSDK.Models.Spread.POSITION_CENTER;
-    }
-
+        else {
+            this.centerItem = item;
+        }
+    };
+    //TODO : Manage opening next and previous spine
     this.openNext = function() {
 
         var items = this.validItems();
@@ -141,8 +110,8 @@ ReadiumSDK.Models.Spread = function(spine, orientation) {
                 this.openItem(nextItem);
             }
         }
-    };
-
+    }
+    //TODO : Manage opening next and previous spine
     this.openPrev = function() {
 
         var items = this.validItems();
@@ -174,23 +143,31 @@ ReadiumSDK.Models.Spread = function(spine, orientation) {
         });
 
         return arr;
-    };
-
-    function getNeighbourItem(item) {
-
-        if(item.isLeftPage()) {
-            return self.spine.isRightToLeft() ? self.spine.prevItem(item) : self.spine.nextItem(item);
-        }
-
-        if(item.isRightPage()) {
-            return self.spine.isRightToLeft() ? self.spine.nextItem(item) : self.spine.prevItem(item);
-        }
-
-        return undefined;
     }
 
-};
+    this.getNeighbourItem = function(item) {
 
-ReadiumSDK.Models.Spread.POSITION_LEFT = "left";
-ReadiumSDK.Models.Spread.POSITION_RIGHT = "right";
-ReadiumSDK.Models.Spread.POSITION_CENTER = "center";
+        var neighbourItem = undefined;
+
+        if(!this.isSyntheticSpread) {
+            return neighbourItem;
+        }
+
+        if(item.isLeftPage()) {
+
+            neighbourItem = this.spine.isRightToLeft() ? this.spine.prevItem(item) : this.spine.nextItem(item);
+        }
+        else if(item.isRightPage()) {
+
+            neighbourItem = this.spine.isRightToLeft() ? this.spine.nextItem(item) : this.spine.prevItem(item);
+        }
+
+        if(neighbourItem && (neighbourItem.isCenterPage() || neighbourItem.page_spread === item.page_spread) ) {
+
+            neighbourItem = undefined;
+        }
+
+        return neighbourItem;
+    };
+
+};

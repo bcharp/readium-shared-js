@@ -16,19 +16,19 @@
 
 ReadiumSDK.Collections.StyleCollection = function() {
 
-    var _styles = [];
+    this.styles = [];
 
     this.clear = function() {
-        _styles.length = 0;
+        this.styles.clear();
 
     };
 
     this.findStyle = function(selector) {
 
-        var count = _styles.length;
+        var count = this.styles.length;
         for(var i = 0; i < count; i++) {
-            if(_styles[i].selector === selector) {
-                return _styles[i];
+            if(this.styles[i].selector === selector) {
+                return this.styles[i];
             }
         }
 
@@ -44,31 +44,10 @@ ReadiumSDK.Collections.StyleCollection = function() {
         }
         else {
             style = new ReadiumSDK.Models.Style(selector, declarations);
-            _styles.push(style);
+            this.styles.push(style);
         }
 
         return style;
-    };
-
-    this.getStyles = function() {
-        return _styles;
-    };
-
-    this.resetStyleValues = function() {
-
-        var count = _styles.length;
-
-        for(var i = 0; i < count; i++) {
-
-            var style = _styles[i];
-            var declarations = style.declarations;
-
-            for(var prop in declarations) {
-                if(declarations.hasOwnProperty(prop)) {
-                    declarations[prop] = '';
-                }
-            }
-        }
     }
 
 };

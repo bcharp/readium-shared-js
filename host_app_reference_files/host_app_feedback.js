@@ -1,3 +1,5 @@
+//  LauncherOSX
+//
 //  Created by Boris Schneiderman.
 //  Copyright (c) 2012-2013 The Readium Foundation.
 //
@@ -14,27 +16,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+//This is demo file that does nothing
+//Host application has to override this file and provide it's own logic for handling ReadiumSDK events
+//See LauncherOSX and LauncherIOS for examples
+ReadiumSDK.HostAppFeedback = function() {
 
-ReadiumSDK.Models.ViewerSettings = function(settingsData) {
+    ReadiumSDK.on("ReaderInitialized", function(){
+        ReadiumSDK.reader.on("PaginationChanged", this.onPaginationChanged, this);
+    }, this);
 
-    this.isSyntheticSpread = true;
-    this.fontSize = 100;
-    this.columnGap = 20;
+    this.onPaginationChanged = function(paginationInfo) {
 
-    this.update = function(settingsData) {
+        console.log("Pagination Chenged!");
 
-        if(settingsData.isSyntheticSpread !== undefined) {
-            this.isSyntheticSpread = settingsData.isSyntheticSpread;
-        }
-
-        if(settingsData.columnGap !== undefined) {
-            this.columnGap = settingsData.columnGap;
-        }
-
-        if(settingsData.fontSize !== undefined) {
-            this.fontSize = settingsData.fontSize;
-        }
     };
 
-    this.update(settingsData);
-};
+}();
+
