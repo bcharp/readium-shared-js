@@ -30,17 +30,17 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     userStyles: undefined,
 
     initialize: function() {
-        console.log("READER");
+
         this.viewerSettings = new ReadiumSDK.Models.ViewerSettings({});
         this.userStyles = new ReadiumSDK.Collections.StyleCollection();
     },
 
     renderCurrentView: function(isReflowable) {
-        console.log("READER READER");
+        
         if(this.currentView){
 
             //current view is already rendered
-            if( this.currentView.isReflowable() === isReflowable) {
+            if(this.currentView.isReflowable() === isReflowable) {
                 return;
             }
 
@@ -48,11 +48,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         }
 
         if(isReflowable) {
-
             this.currentView = new ReadiumSDK.Views.ReflowableView({$viewport: this.$el, spine:this.spine, userStyles: this.userStyles});
-        }
-        else {
-
+        }else {
             this.currentView = new ReadiumSDK.Views.FixedView({$viewport: this.$el, spine:this.spine, userStyles: this.userStyles});
         }
 
@@ -149,7 +146,6 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             }
 
         }
-        window.location.href = "epubobjc:didDisplayHtml";
     },
 
     /**
@@ -193,18 +189,42 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         if(this.currentView) {
 
-            var bookMark = this.currentView.bookmarkCurrentPage();
-
+            var bookMarkPage = this.currentView.bookmarkCurrentPage();
+            console.log(bookMarkPage);
             this.currentView.setViewSettings(this.viewerSettings);
-
-            if(bookMark) {
-                this.openSpineItemElementCfi(bookMark.idref, bookMark.elementCfi);
+            console.log("CONTENT CFI : "+bookMarkPage.contentCFI);
+                                                   
+            if(bookMarkPage.contentCFI !== undefined)
+            {
+                this.openSpineItemElementCfi(bookMarkPage.idref, bookMarkPage.contentCFI);
             }
+            
         }
-
+                                                   
         this.trigger("SettingsApplied");
     },
-
+                                                   
+    getFontPercent: function(){
+       return this.currentView.getFontPercent();
+    },
+    setFontPercent : function(percent){
+       this.currentView.setFontPercent(percent);
+    },
+                                                   
+    getFontName : function (){
+      return this.currentView.getFontName();
+    },
+    setFontName : function (fontName){
+      this.currentView.setFontName(fontName);
+    },
+                                                   
+    setTheme : function (themeName){
+       console.log("theme : "+themeName);
+       this.currentView.setTheme(themeName);
+    },
+    getTheme : function (){
+       return this.currentView.getTheme();
+    },
     /**
      * Opens the next page.
      */
@@ -305,6 +325,11 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
      */
     openSpineItemElementCfi: function(idref, elementCfi) {
 
+        console.log("--- cfi ---");
+        console.log(elementCfi);
+        console.log(JSON.stringify(elementCfi));
+        console.log("--- end cfi ---");
+                                                   
         var spineItem = this.getSpineItem(idref);
 
         if(!spineItem) {
@@ -312,10 +337,13 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         }
 
         var pageData = new ReadiumSDK.Models.PageOpenRequest(spineItem);
+                                                   
         if(elementCfi) {
             pageData.setElementCfi(elementCfi);
         }
-
+                                                   
+        console.log(JSON.stringify(pageData));
+                                                   
         this.openPage(pageData);
     },
 
@@ -357,6 +385,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         this.renderCurrentView(pageRequest.spineItem.isReflowable());
         this.currentView.openPage(pageRequest);
+        //window.location.href = "epubobjc:didDisplayHtml";
     },
 
 

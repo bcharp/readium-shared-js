@@ -135,14 +135,22 @@ ReadiumSDK.Views.OnePageView = Backbone.View.extend({
 
         this.$el.css("left", left + "px");
         this.$el.css("top", top + "px");
+        console.log("meta width "+this.meta_size.width);
+        console.log("meta height "+this.meta_size.height);
+                                                    
         this.$el.css("width", Math.floor(this.meta_size.width * scale) + "px");
         this.$el.css("height", Math.floor(this.meta_size.height * scale) + "px");
+                                                    
+        this.$iframe.css("width", Math.floor(this.meta_size.width * scale) + "px");
+        this.$iframe.css("height", Math.floor(this.meta_size.height * scale) + "px");
 
         var css = this.generateTransformCSS(scale, 0, 0);
 
         css["width"] = this.meta_size.width;
         css["height"] = this.meta_size.height;
 
+        console.log("css[] "+JSON.stringify(css));
+        
         this.$epubHtml.css(css);
     },
 

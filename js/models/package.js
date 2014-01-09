@@ -29,9 +29,11 @@ ReadiumSDK.Models.Package = Backbone.Model.extend({
     initialize : function() {
 
         this.reset();
-
         var packageData = this.get("packageData");
-
+        
+                                                  
+        //alert(JSON.stringify(packageData));
+                                                  
         if(packageData) {
 
             this.rootUrl = packageData.rootUrl;

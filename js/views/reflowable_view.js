@@ -23,6 +23,14 @@
  * @class ReadiumSDK.Views.ReflowableView
  */
 
+var nightTheme = "nightTheme";
+var nightBackground = "#000000";
+var nightColor = "#888888";
+var whiteTheme = "whiteTheme";
+var whiteBackground = "#ffffff";
+var whiteColor = "#111111";
+
+
 ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
     currentSpineItem: undefined,
@@ -33,7 +41,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     $viewport: undefined,
     $contentFrame: undefined,
     userStyles: undefined,
-
+                                                       
     lastViewPortSize : {
         width: undefined,
         height: undefined
@@ -51,14 +59,14 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     },
 
     initialize: function() {
-        console.log("REFLOWABLE");
+                                                       
         this.$viewport = this.options.$viewport;
         this.spine = this.options.spine;
         this.userStyles = this.options.userStyles;
     },
 
     render: function(){
-        console.log("REFLOWABLE READER");
+                                                       
         this.template = ReadiumSDK.Helpers.loadTemplate("reflowable_book_frame", {});
 
         this.setElement(this.template);
@@ -75,7 +83,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         //We will call onViewportResize after user stopped resizing window
         var lazyResize = _.debounce(this.onViewportResize, 100);
         $(window).on("resize.ReadiumSDK.reflowableView", _.bind(lazyResize, this));
-
+        
         return this;
     },
 
@@ -108,7 +116,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     },
 
     setViewSettings: function(settings) {
-
+                                                       
         this.paginationInfo.visibleColumnCount = 1;//settings.isSyntheticSpread ? 2 : 1;
         this.paginationInfo.columnGap = settings.columnGap;
         this.fontSize = settings.fontSize;
@@ -145,7 +153,56 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             this.$epubHtml.css("-webkit-column-gap", this.paginationInfo.columnGap + "px");
         }
     },
-
+                                                       
+    getFontPercent : function (){
+       return this.fontSize;
+    },
+        
+    setFontPercent : function (percent){
+   
+       this.fontSize = percent;
+       this.updateHtmlFontSizeAndColumnGap();
+    },
+    getFontName : function (){
+        return this.$epubHtml.css("font-family");
+    },
+   
+    setFontName : function (fontName){
+       console.log(fontName);
+       if(fontName == "undefined")
+       {
+           this.$epubHtml.css("font-family", "");
+           this.$epubHtml.find("*").css("font-family","");
+           return;
+       }
+       this.$epubHtml.css("font-family", fontName);
+       this.$epubHtml.find("*").css("font-family",fontName);
+    },
+    getThemeInfos : function (){
+       var response = {"background":this.$epubHtml.css("background-color"),"color":this.$epubHtml.css("color")};
+       return response;
+    },
+    
+    setThemeInfos : function (background, color){
+       this.$epubHtml.css({"background-color":background,"color":color});
+       $("body").css({"background-color":background,"color":color});
+    },
+    setTheme : function (themeName){
+       if(themeName === nightTheme){
+           this.setThemeInfos(nightBackground,nightColor);
+       }else if(themeName == whiteTheme){
+           this.setThemeInfos(whiteBackground, whiteColor);
+       }
+    },
+    getTheme : function (){
+        var themeInfos = this.getThemeInfos();
+        if(themeInfos.background === nightBackground && themeInfos.color === nightColor){
+           return nightTheme;
+        }else{
+           return whiteTheme;
+        }
+    },
+                                            
     onIFrameLoad : function(success) {
 
         this.isWaitingFrameRender = false;
@@ -250,6 +307,8 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             this.paginationInfo.currentSpreadIndex = Math.floor(pageIndex / this.paginationInfo.visibleColumnCount) ;
             this.onPaginationChanged();
         }
+        
+        window.location.href = "epubobjc:didDisplayHtml";
     },
 
     redraw: function() {
