@@ -27,7 +27,8 @@ ReadiumSDK.HostAppFeedback = function() {
 
     this.onPaginationChanged = function(paginationInfo) {
 
-        console.log("Pagination Chenged!");
+        window.location.href = "epubobjc:pageDidChange?q=" +
+        encodeURIComponent(JSON.stringify(paginationInfo));
 
     };
 

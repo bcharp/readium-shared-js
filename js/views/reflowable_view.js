@@ -270,11 +270,13 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     },
 
     openPage: function(pageRequest) {
-
+                                                       
         if(this.isWaitingFrameRender) {
             this.deferredPageRequest = pageRequest;
             return;
         }
+                                                       
+        console.log(this.paginationInfo.columnCount);
 
         // if no spine item specified we are talking about current spine item
         if(pageRequest.spineItem && pageRequest.spineItem != this.currentSpineItem) {
@@ -288,6 +290,11 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         if(pageRequest.spineItemPageIndex !== undefined) {
             pageIndex = pageRequest.spineItemPageIndex;
+        }
+        else if(pageRequest.percent)
+        {
+            var startPage = Math.round(pageRequest.percent * this.paginationInfo.columnCount);
+            pageIndex = startPage;
         }
         else if(pageRequest.elementId) {
             pageIndex = navigation.getPageForElementId(pageRequest.elementId);
@@ -383,7 +390,9 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         this.paginationInfo.pageOffset = (this.paginationInfo.columnWidth + this.paginationInfo.columnGap) * this.paginationInfo.visibleColumnCount * this.paginationInfo.currentSpreadIndex;
         this.redraw();
-        this.trigger("ViewPaginationChanged");
+        console.log("onPaginationChanged");
+        window.location.href = "epubobjc:pageDidChange?q="+encodeURIComponent(JSON.stringify(this.paginationInfo));
+        //this.updateLauncher(this.paginationInfo.currentSpreadIndex,this.paginationInfo.columnCount);
     },
 
     openPagePrev:  function () {
@@ -439,6 +448,21 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         var pageRequest = new ReadiumSDK.Models.PageOpenRequest(this.currentSpineItem);
         pageRequest.setLastPage();
         this.openPage(pageRequest);
+    },
+                                                       
+   /* displayCurrentPage: function () {
+                                                       
+       if(this.paginationInfo.currentPage < 0 || this.paginationInfo.currentPage >= this.paginationInfo.pageCount) {
+           this.updateLauncher(0, 0);
+           return;
+       }
+       var shift = this.paginationInfo.currentPage * (this.viewPortSize.width + this.paginationInfo.columnGap);
+       this.$epubHtml.css("left", -shift + "px");
+       this.updateLauncher(this.paginationInfo.currentPage, this.paginationInfo.pageCount);
+    },*/
+                                                       
+    updateLauncher: function (pageIx, pageCount) {
+        window.location.href = "epubobjc:setPageIndexAndPageCount/" + pageIx + "/" + pageCount;
     },
                                                        
     updatePagination: function() {

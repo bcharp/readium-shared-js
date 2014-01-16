@@ -30,9 +30,6 @@ ReadiumSDK.Models.Package = Backbone.Model.extend({
 
         this.reset();
         var packageData = this.get("packageData");
-        
-                                                  
-        //alert(JSON.stringify(packageData));
                                                   
         if(packageData) {
 

@@ -138,7 +138,7 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
         this.updateContentMetaSize();
         this.resizeBook();
 
-        this.trigger("ViewPaginationChanged");
+        window.location.href = "epubobjc:pageDidChange?q="+encodeURIComponent(JSON.stringify(this.getPaginationInfo()));
     },
 
     onViewportResize: function() {
@@ -322,6 +322,7 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
 
         this.spread.openItem(paginationRequest.spineItem);
         this.redraw();
+        window.location.href = "epubobjc:didDisplayHtml";                                          
     },
 
 

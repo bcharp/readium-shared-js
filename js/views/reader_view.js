@@ -125,7 +125,10 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
                 else if(pageRequestData.elementCfi) {
                     this.openSpineItemElementCfi(pageRequestData.idref, pageRequestData.elementCfi);
                 }
-                else {
+                else if(pageRequestData.percent){
+                    this.openSpineItemPage(pageRequestData.idref, 0, pageRequestData.percent);
+                }
+                else{
                     this.openSpineItemPage(pageRequestData.idref, 0);
                 }
             }
@@ -396,7 +399,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
      * @param {string} idref Id of the spine item
      * @param {number} pageIndex Zero based index of the page in the spine item
      */
-    openSpineItemPage: function(idref, pageIndex) {
+    openSpineItemPage: function(idref, pageIndex, percent) {
 
         var spineItem = this.getSpineItem(idref);
 
@@ -407,6 +410,10 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         var pageData = new ReadiumSDK.Models.PageOpenRequest(spineItem);
         if(pageIndex) {
             pageData.setPageIndex(pageIndex);
+        }
+                                                   
+        if(percent){
+            pageData.percent = percent;
         }
 
         this.openPage(pageData);
