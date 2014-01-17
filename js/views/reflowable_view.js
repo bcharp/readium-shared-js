@@ -108,11 +108,10 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     },
 
     onViewportResize: function() {
-
+            
         if(this.updateViewportSize()) {
             this.updatePagination();
         }
-
     },
 
     setViewSettings: function(settings) {
@@ -187,6 +186,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
        this.$epubHtml.css({"background-color":background,"color":color});
        $("body").css({"background-color":background,"color":color});
     },
+                                                       
     setTheme : function (themeName){
        if(themeName === nightTheme){
            this.setThemeInfos(nightBackground,nightColor);
@@ -194,6 +194,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
            this.setThemeInfos(whiteBackground, whiteColor);
        }
     },
+                                                       
     getTheme : function (){
         var themeInfos = this.getThemeInfos();
         if(themeInfos.background === nightBackground && themeInfos.color === nightColor){
@@ -224,7 +225,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.$epubHtml.css("height", "100%");
         this.$epubHtml.css("position", "absolute");
         this.$epubHtml.css("-webkit-column-axis", "horizontal");
-
+        this.$epubHtml.css("-webkit-hyphens", "auto");
         this.updateHtmlFontSizeAndColumnGap();
 
 
@@ -317,7 +318,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         
         window.location.href = "epubobjc:didDisplayHtml";
     },
-
+    
     redraw: function() {
 
         var offsetVal =  -this.paginationInfo.pageOffset + "px";
@@ -327,7 +328,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     },
 
     updateViewportSize: function() {
-
+        
         var newWidth = this.$contentFrame.width();
         var newHeight = this.$contentFrame.height();
 
@@ -387,12 +388,11 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     },
 
     onPaginationChanged: function() {
-
+                                                       
         this.paginationInfo.pageOffset = (this.paginationInfo.columnWidth + this.paginationInfo.columnGap) * this.paginationInfo.visibleColumnCount * this.paginationInfo.currentSpreadIndex;
         this.redraw();
         console.log("onPaginationChanged");
         window.location.href = "epubobjc:pageDidChange?q="+encodeURIComponent(JSON.stringify(this.paginationInfo));
-        //this.updateLauncher(this.paginationInfo.currentSpreadIndex,this.paginationInfo.columnCount);
     },
 
     openPagePrev:  function () {
@@ -450,21 +450,6 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.openPage(pageRequest);
     },
                                                        
-   /* displayCurrentPage: function () {
-                                                       
-       if(this.paginationInfo.currentPage < 0 || this.paginationInfo.currentPage >= this.paginationInfo.pageCount) {
-           this.updateLauncher(0, 0);
-           return;
-       }
-       var shift = this.paginationInfo.currentPage * (this.viewPortSize.width + this.paginationInfo.columnGap);
-       this.$epubHtml.css("left", -shift + "px");
-       this.updateLauncher(this.paginationInfo.currentPage, this.paginationInfo.pageCount);
-    },*/
-                                                       
-    updateLauncher: function (pageIx, pageCount) {
-        window.location.href = "epubobjc:setPageIndexAndPageCount/" + pageIx + "/" + pageCount;
-    },
-                                                       
     updatePagination: function() {
 
         if(!this.$epubHtml) {
@@ -509,8 +494,10 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             //is shifted in side the containing div. Hiding and showing the html element puts document in place.
             self.$epubHtml.hide();
             setTimeout(function() {
+                
                 self.$epubHtml.show();
                 self.onPaginationChanged();
+                       
             }, 50);
 
         }, 100);

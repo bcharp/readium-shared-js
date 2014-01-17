@@ -147,7 +147,7 @@ ReadiumSDK.Views.FixedView = Backbone.View.extend({
     },
 
     resizeBook: function() {
-
+                                                  
         console.log("resize book");
                                                   
         if(!this.contentMetaSize || !this.bookMargins) {
