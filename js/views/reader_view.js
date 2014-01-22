@@ -228,6 +228,36 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     getTheme : function (){
        return this.currentView.getTheme();
     },
+    //from cfi
+    getPageForElement: function($element, x, y) {
+   
+       var elementRect = ReadiumSDK.Helpers.Rect.fromElement($element);
+       var posInElement = Math.ceil(elementRect.top + y * elementRect.height / 100);
+   
+       var column = Math.floor(posInElement / this.currentView.$viewport.height());
+   
+       return column;
+                                                   
+    },
+    openAnchor: function (anchor)
+    {
+       if(this.currentView.isReflowable())
+       {
+           var anc = $("#"+anchor+":first",this.currentView.$epubHtml);
+           var offset = anc.offset();
+           
+           console.log("offset left : "+offset.left);
+           console.log("column width : "+this.currentView.paginationInfo.columnWidth);
+           
+           var page = 1;
+           if(offset.left >= this.currentView.paginationInfo.columnWidth)
+           {
+               page = Math.round(offset.left/this.currentView.paginationInfo.columnWidth);
+           }
+                                                   
+           this.currentView.openPageAtIndex(page);
+       }
+    },
     /**
      * Opens the next page.
      */
@@ -349,7 +379,6 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
                                                    
         this.openPage(pageData);
     },
-
     /**
      *
      * Opens specified page index of the current spine item
@@ -378,7 +407,6 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
             pageRequest = new ReadiumSDK.Models.PageOpenRequest(undefined);
             pageRequest.setPageIndex(pageIndex);
-
         }
 
         this.openPage(pageRequest);

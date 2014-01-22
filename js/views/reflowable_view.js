@@ -149,6 +149,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         if(this.$epubHtml) {
             this.$epubHtml.css("font-size", this.fontSize + "%");
+            $("*", this.$epubHtml).css("cssText","font-size: "+this.fontSize+"% !important;");
             this.$epubHtml.css("-webkit-column-gap", this.paginationInfo.columnGap + "px");
         }
     },
@@ -221,7 +222,6 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         var epubContentDocument = this.$iframe[0].contentDocument;
         this.$epubHtml = $("html", epubContentDocument);
-
         this.$epubHtml.css("height", "100%");
         this.$epubHtml.css("position", "absolute");
         this.$epubHtml.css("-webkit-column-axis", "horizontal");
@@ -237,7 +237,6 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 /////////
 
         this.applyStyles();
-
         this.applySwitches(epubContentDocument);
         this.registerTriggers(epubContentDocument);
            
@@ -441,6 +440,13 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             }
             return false;
         }
+    },
+                                                       
+    openPageAtIndex: function(newIndex){
+                                                       
+       this.paginationInfo.currentSpreadIndex = newIndex;
+       this.onPaginationChanged();
+       return true;
     },
                                                        
     openLastPage: function(){
