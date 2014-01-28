@@ -29,7 +29,6 @@ ReadiumSDK.HostAppFeedback = function() {
 
         window.location.href = "epubobjc:pageDidChange?q=" +
         encodeURIComponent(JSON.stringify(paginationInfo));
-
     };
 
 }();
