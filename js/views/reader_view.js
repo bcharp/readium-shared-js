@@ -243,17 +243,19 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     {
        if(this.currentView.isReflowable())
        {
-           var anc = $("#"+anchor+":first",this.currentView.$epubHtml);
+           var anc = $("#"+anchor+":last",this.currentView.$epubHtml);
            var offset = anc.offset();
+           var position = anc.position();
            
-           console.log("offset left : "+offset.left);
+           /*console.log("ancre texte : "+ anchor);
+           console.log("ancre class : "+ anc.attr('class'));
+           console.log("offset left : "+ offset.left);
+           console.log("position left : "+ position.left);
            console.log("column width : "+this.currentView.paginationInfo.columnWidth);
+           console.log("page offset : "+this.currentView.paginationInfo.pageOffset);*/
            
-           var page = 1;
-           if(offset.left >= this.currentView.paginationInfo.columnWidth)
-           {
-               page = Math.round(offset.left/this.currentView.paginationInfo.columnWidth);
-           }
+            page = Math.floor((this.currentView.paginationInfo.pageOffset + offset.left)/(this.currentView.paginationInfo.columnWidth+this.currentView.paginationInfo.columnGap));
+            console.log("page : "+page);
                                                    
            this.currentView.openPageAtIndex(page);
        }

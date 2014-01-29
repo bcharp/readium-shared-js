@@ -464,7 +464,6 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
         this.$iframe.css("width", this.lastViewPortSize.width + "px");
         this.$iframe.css("height", this.lastViewPortSize.height + "px");
-
         this.$epubHtml.css("height", this.lastViewPortSize.height + "px");
                                                        
         this.paginationInfo.columnWidth = (this.lastViewPortSize.width - this.paginationInfo.columnGap * (this.paginationInfo.visibleColumnCount - 1)) / this.paginationInfo.visibleColumnCount;
