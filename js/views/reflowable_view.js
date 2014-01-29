@@ -50,7 +50,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     paginationInfo : {
 
         visibleColumnCount : 2,
-        columnGap : 20,
+        columnGap : 10,
         spreadCount : 0,
         currentSpreadIndex : 0,
         columnWidth : undefined,
@@ -117,7 +117,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     setViewSettings: function(settings) {
                                                        
         this.paginationInfo.visibleColumnCount = 1;//settings.isSyntheticSpread ? 2 : 1;
-        this.paginationInfo.columnGap = settings.columnGap;
+        this.paginationInfo.columnGap = 10;//settings.columnGap;
         this.fontSize = settings.fontSize;
         this.updateHtmlFontSizeAndColumnGap();
 
@@ -466,9 +466,9 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.$iframe.css("height", this.lastViewPortSize.height + "px");
 
         this.$epubHtml.css("height", this.lastViewPortSize.height + "px");
-
+                                                       
         this.paginationInfo.columnWidth = (this.lastViewPortSize.width - this.paginationInfo.columnGap * (this.paginationInfo.visibleColumnCount - 1)) / this.paginationInfo.visibleColumnCount;
-
+                                                       
         //we do this because CSS will floor column with by itself if it is not a round number
         this.paginationInfo.columnWidth = Math.floor(this.paginationInfo.columnWidth);
 
@@ -477,7 +477,9 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.shiftBookOfScreen();
 
         this.$epubHtml.css("-webkit-column-width", this.paginationInfo.columnWidth + "px");
+                                                       
         console.log("pagination " + this.paginationInfo.columnWidth + "px");
+                                                       
         var self = this;
         //TODO it takes time for rendition_layout engine to arrange columns we waite
         //it would be better to react on rendition_layout column reflow finished event
