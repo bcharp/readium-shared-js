@@ -151,9 +151,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
                                                        
             this.$epubHtml.css("font-size", this.fontSize + "%");
             this.$epubHtml.css("-webkit-column-gap", this.paginationInfo.columnGap + "px");
-            
-            var csstxt = $("body",this.$epubHtml).css('cssText') + ";font-size: "+this.fontSize+"% !important;";
-            $("body",this.$epubHtml).css('cssText', csstxt);
+            $("<style>body{font-size: "+this.fontSize+"% !important;}</style>").appendTo($("head",this.$epubHtml));
         }
     },
                                                        
