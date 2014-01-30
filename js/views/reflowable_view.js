@@ -148,9 +148,12 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     updateHtmlFontSizeAndColumnGap: function() {
 
         if(this.$epubHtml) {
+                                                       
             this.$epubHtml.css("font-size", this.fontSize + "%");
-            $("*", this.$epubHtml).css("cssText","font-size: "+this.fontSize+"% !important;");
             this.$epubHtml.css("-webkit-column-gap", this.paginationInfo.columnGap + "px");
+            
+            var csstxt = $("body",this.$epubHtml).css('cssText') + ";font-size: "+this.fontSize+"% !important;";
+            $("body",this.$epubHtml).css('cssText', csstxt);
         }
     },
                                                        
@@ -226,6 +229,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.$epubHtml.css("position", "absolute");
         this.$epubHtml.css("-webkit-column-axis", "horizontal");
         this.$epubHtml.css("-webkit-hyphens", "auto");
+        $("<style>body{margin-left:0px !important;margin-right:0px !important;}</style>").appendTo($("head",this.$epubHtml));
         this.updateHtmlFontSizeAndColumnGap();
 
 
@@ -482,7 +486,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.shiftBookOfScreen();
 
         this.$epubHtml.css("-webkit-column-width", this.paginationInfo.columnWidth + "px");
-                                                       
+
         console.log("pagination " + this.paginationInfo.columnWidth + "px");
                                                        
         var self = this;
