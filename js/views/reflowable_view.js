@@ -239,7 +239,6 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.applyStyles();
         this.applySwitches(epubContentDocument);
         this.registerTriggers(epubContentDocument);
-           
     },
 
 
@@ -270,21 +269,26 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     },
 
     openPage: function(pageRequest) {
+        
+        console.log("openpage");
                                                        
         if(this.isWaitingFrameRender) {
             this.deferredPageRequest = pageRequest;
             return;
         }
-                                                       
-        console.log(this.paginationInfo.columnCount);
+        console.log("check 1");
 
         // if no spine item specified we are talking about current spine item
         if(pageRequest.spineItem && pageRequest.spineItem != this.currentSpineItem) {
+                                                       
+            console.log("no spine item");
             this.deferredPageRequest = pageRequest;
             this.loadSpineItem(pageRequest.spineItem);
             return;
         }
-
+                                                       
+        console.log("check 2");
+                                                       
         var pageIndex = undefined;
         var navigation = new ReadiumSDK.Views.CfiNavigationLogic(this.$contentFrame, this.$iframe);
 
@@ -314,7 +318,8 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             this.paginationInfo.currentSpreadIndex = Math.floor(pageIndex / this.paginationInfo.visibleColumnCount) ;
             this.onPaginationChanged();
         }
-        
+                                                       
+        console.log("epubobjc:didDisplayHtml");
         window.location.href = "epubobjc:didDisplayHtml";
     },
     
@@ -390,7 +395,8 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
                                                        
         this.paginationInfo.pageOffset = (this.paginationInfo.columnWidth + this.paginationInfo.columnGap) * this.paginationInfo.visibleColumnCount * this.paginationInfo.currentSpreadIndex;
         this.redraw();
-        console.log("onPaginationChanged");
+                                                       
+        //console.log("epubobjc:pageDidChange?q="+encodeURIComponent(JSON.stringify(this.paginationInfo)));
         window.location.href = "epubobjc:pageDidChange?q="+encodeURIComponent(JSON.stringify(this.paginationInfo));
     },
 
