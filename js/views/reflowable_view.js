@@ -74,7 +74,6 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
     initialize: function() {
                                                        
-        alert("TEST SCRIPT");
         this.timerDebug = new Date();
                                                        
         this.$viewport = this.options.$viewport;
