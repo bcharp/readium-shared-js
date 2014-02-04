@@ -28,9 +28,10 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     spine: undefined,
     viewerSettings:undefined,
     userStyles: undefined,
-
+                                                   
     initialize: function() {
-
+        
+        this.timerDebug = new Date();
         this.viewerSettings = new ReadiumSDK.Models.ViewerSettings({});
         this.userStyles = new ReadiumSDK.Collections.StyleCollection();
     },
@@ -56,7 +57,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
         this.currentView.setViewSettings(this.viewerSettings);
 
         this.currentView.render();
-
+                                                   
         var self = this;
         this.currentView.on("ViewPaginationChanged", function(){
             var paginationReportData = self.currentView.getPaginationInfo();
@@ -109,7 +110,6 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
                                                    
             var pageRequestData = openBookData.openPageRequest;
             if(last){
-                console.log("open last page");
                 var spineItem = this.spine.first();
                 if(spineItem) {
                     var pageOpenRequest = new ReadiumSDK.Models.PageOpenRequest(spineItem);
@@ -186,16 +186,12 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
      */
     updateSettings: function(settingsData) {
 
-        console.log("UpdateSettings: " + JSON.stringify(settingsData));
-
         this.viewerSettings.update(settingsData);
 
         if(this.currentView) {
 
             var bookMarkPage = this.currentView.bookmarkCurrentPage();
-            console.log(bookMarkPage);
             this.currentView.setViewSettings(this.viewerSettings);
-            console.log("CONTENT CFI : "+bookMarkPage.contentCFI);
                                                    
             if(bookMarkPage.contentCFI !== undefined)
             {
@@ -222,7 +218,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     },
                                                    
     setTheme : function (themeName){
-       console.log("theme : "+themeName);
+       //console.log("theme : "+themeName);
        this.currentView.setTheme(themeName);
     },
     getTheme : function (){
@@ -255,7 +251,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
            console.log("page offset : "+this.currentView.paginationInfo.pageOffset);*/
            
             page = Math.floor((this.currentView.paginationInfo.pageOffset + offset.left)/(this.currentView.paginationInfo.columnWidth+this.currentView.paginationInfo.columnGap));
-            console.log("page : "+page);
+            //console.log("page : "+page);
                                                    
            this.currentView.openPageAtIndex(page);
        }
@@ -336,13 +332,13 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         if(!idref) {
 
-            console.log("idref parameter value missing!");
+            //console.log("idref parameter value missing!");
             return undefined;
         }
 
         var spineItem = this.spine.getItemById(idref);
         if(!spineItem) {
-            console.log("Spine item with id " + idref + " not found!");
+            //console.log("Spine item with id " + idref + " not found!");
             return undefined;
         }
 
@@ -360,10 +356,10 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
      */
     openSpineItemElementCfi: function(idref, elementCfi) {
 
-        console.log("--- cfi ---");
+        /*console.log("--- cfi ---");
         console.log(elementCfi);
         console.log(JSON.stringify(elementCfi));
-        console.log("--- end cfi ---");
+        console.log("--- end cfi ---");*/
                                                    
         var spineItem = this.getSpineItem(idref);
 
@@ -377,7 +373,7 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
             pageData.setElementCfi(elementCfi);
         }
                                                    
-        console.log(JSON.stringify(pageData));
+        //console.log(JSON.stringify(pageData));
                                                    
         this.openPage(pageData);
     },

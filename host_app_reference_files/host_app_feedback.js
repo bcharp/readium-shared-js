@@ -22,13 +22,14 @@
 ReadiumSDK.HostAppFeedback = function() {
 
     ReadiumSDK.on("ReaderInitialized", function(){
-        ReadiumSDK.reader.on("PaginationChanged", this.onPaginationChanged, this);
+        alert((new Date).getTime() - window.startTime);
+        //ReadiumSDK.reader.on("PaginationChanged", this.onPaginationChanged, this);
     }, this);
 
     this.onPaginationChanged = function(paginationInfo) {
 
-        window.location.href = "epubobjc:pageDidChange?q=" +
-        encodeURIComponent(JSON.stringify(paginationInfo));
+        //window.location.href = "epubobjc:pageDidChange?q=" +
+        //encodeURIComponent(JSON.stringify(paginationInfo));
     };
 
 }();
