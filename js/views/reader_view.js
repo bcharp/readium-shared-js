@@ -28,7 +28,8 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     spine: undefined,
     viewerSettings:undefined,
     userStyles: undefined,
-                                                   
+    currentBookmark: undefined,
+
     initialize: function() {
         
         this.timerDebug = new Date();
@@ -187,17 +188,43 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
     updateSettings: function(settingsData) {
 
         this.viewerSettings.update(settingsData);
-
+        
         if(this.currentView) {
 
-            var bookMarkPage = this.currentView.bookmarkCurrentPage();
-            this.currentView.setViewSettings(this.viewerSettings);
-                                                   
-            if(bookMarkPage.contentCFI !== undefined)
-            {
-                this.openSpineItemElementCfi(bookMarkPage.idref, bookMarkPage.contentCFI);
+            if(!this.currentView.$epubHtml) {
+                console.log("no epub html");
+                return;
             }
+
+            if (!this.currentView.$epubHtml.is(":visible")) {
+                console.log("not visible");
+                return;
+            };
+
+            if (this.currentView.isWaitingFrameRender) {
+                console.log("waiting frame render");
+                return;
+            };
+
             
+            this.currentView.setViewSettings(this.viewerSettings);
+
+            if (this.currentBookmark === undefined) 
+            {
+                console.log("undefined");
+                this.currentBookmark = this.currentView.bookmarkCurrentPage();
+                
+                setTimeout(function(){
+
+                    this.currentBookmark = undefined;
+
+                },5000);
+            }
+
+            if(this.currentBookmark.contentCFI !== undefined)
+            {
+                this.openSpineItemElementCfi(this.currentBookmark.idref, this.currentBookmark.contentCFI);
+            }
         }
                                                    
         this.trigger("SettingsApplied");
@@ -414,7 +441,6 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
 
         this.renderCurrentView(pageRequest.spineItem.isReflowable());
         this.currentView.openPage(pageRequest);
-        //window.location.href = "epubobjc:didDisplayHtml";
     },
 
 
