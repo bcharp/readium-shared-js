@@ -42,7 +42,7 @@ var nightColor = "#888888";
 var whiteTheme = "whiteTheme";
 var whiteBackground = "#ffffff";
 var whiteColor = "#111111";
-var TAG = "html, body, div, span, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark";
+var TAG = "html, body, div, span, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, h1, h2, h3, h4, h5";
 
 ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
@@ -55,6 +55,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     $contentFrame: undefined,
     userStyles: undefined,
     timerDebug: undefined,
+    hasOpenPageAtIndex: null,
                                                        
     lastViewPortSize : {
         width: undefined,
@@ -186,7 +187,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
                styleTheme.remove();
             }
                                                 
-            $("<style id='yb-font'>"+TAG+"{font-size: "+this.fontSize+"% !important;}</style>").appendTo($("head",this.$epubHtml));
+            $("<style id='yb-font'>"+TAG+"{font-size: "+this.fontSize+"px !important; line-height:"+this.fontSize*1.3+"px !important;}</style>").appendTo($("head",this.$epubHtml));
         }
     },
                                                        
@@ -285,7 +286,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         }
                                                        
         
-        $("<style id='yb-config'>"+TAG+"{text-align:justify !important;-webkit-hyphens:auto !important;}</style>").appendTo($("head",this.$epubHtml));
+        $("<style id='yb-config'>"+TAG+"{text-align:justify !important;-webkit-hyphens:auto !important; -webkit-hyphenate-locale: 'fr' !important; margin:0px 0px 0px 0px !important;}</style>").appendTo($("head",this.$epubHtml));
         
         this.updateHtmlFontSizeAndColumnGap();
 
@@ -465,12 +466,17 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     onPaginationChanged: function() {
                                                        
         this.paginationInfo.pageOffset = (this.paginationInfo.columnWidth + this.paginationInfo.columnGap) * this.paginationInfo.visibleColumnCount * this.paginationInfo.currentSpreadIndex;
-        console.log("call redraw");
         this.redraw();
-                                                       
-        //console.log("epubobjc:pageDidChange?q="+encodeURIComponent(JSON.stringify(this.paginationInfo)));
-        //console.log("onPaginationChanged");
-        //window.location.href = "epubobjc:pageDidChange?q="+encodeURIComponent(JSON.stringify(this.paginationInfo));
+        
+        var url = "epubobjc:pageDidChange?q="+encodeURIComponent(JSON.stringify(this.paginationInfo));
+        if (this.hasOpenPageAtIndex !== null & this.hasOpenPageAtIndex !== undefined) 
+        {
+           url +="&pageAtIndex="+this.hasOpenPageAtIndex;
+        }
+
+        window.location.href = url;
+
+        this.hasOpenPageAtIndex = null;
         /*var d = new Date();
         var diff = d.getTime()-this.timerDebug.getTime();
         console.log("TIME PAGINATION CHANGED : "+diff);*/
@@ -526,10 +532,9 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
     },
                                                        
     openPageAtIndex: function(newIndex){
-                                                       
-       this.paginationInfo.currentSpreadIndex = newIndex;
        
-       //console.log("open page at index");
+       this.hasOpenPageAtIndex = newIndex;                                                
+       this.paginationInfo.currentSpreadIndex = newIndex;
        this.onPaginationChanged();
        return true;
     },
