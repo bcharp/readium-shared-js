@@ -286,8 +286,8 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         }
                                                        
         
-        //$("<style id='yb-config'>"+TAG+"{text-align:justify !important;-webkit-hyphens:auto !important; -webkit-hyphenate-locale: 'fr' !important; margin:0px 0px 0px 0px !important;}</style>").appendTo($("head",this.$epubHtml));
-        $("<style id='yb-config'>"+TAG+"{text-align:justify !important;margin:0px 0px 0px 0px !important;}</style>").appendTo($("head",this.$epubHtml));
+        $("<style id='yb-config'>"+TAG+"{text-align:justify !important;-webkit-hyphens:auto !important; -webkit-hyphenate-locale: 'fr' !important; margin:0px 0px 0px 0px !important;}</style>").appendTo($("head",this.$epubHtml));
+        //$("<style id='yb-config'>"+TAG+"{text-align:justify !important;margin:0px 0px 0px 0px !important;}</style>").appendTo($("head",this.$epubHtml));
         
         this.updateHtmlFontSizeAndColumnGap();
 
@@ -400,10 +400,10 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         var offsetVal =  -this.paginationInfo.pageOffset + "px";
         if(this.spine.isLeftToRight())
         {
-          this.$epubHtml.animate({"left":offsetVal},400);
+          this.$epubHtml.animate({"left":offsetVal},250);
         }
        else{
-          this.$epubHtml.animate({"right":offsetVal},400);
+          this.$epubHtml.animate({"right":offsetVal},250);
        }
         
         console.log("end redraw");
