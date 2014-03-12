@@ -64,7 +64,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
 
     paginationInfo : {
 
-        visibleColumnCount : 2,
+        visibleColumnCount : 1,
         columnGap : 10,
         spreadCount : 0,
         currentSpreadIndex : 0,
@@ -166,7 +166,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             this.isWaitingFrameRender = true;
 
             var src = this.spine.getItemUrl(spineItem);
-            //alert(src);
+
             //window.location = src;
             /*var d = new Date();
               var diff = d.getTime()-this.timerDebug.getTime();
@@ -400,10 +400,10 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         var offsetVal =  -this.paginationInfo.pageOffset + "px";
         if(this.spine.isLeftToRight())
         {
-          this.$epubHtml.animate({"left":offsetVal},250);
+          this.$epubHtml.css({"left":offsetVal});
         }
        else{
-          this.$epubHtml.animate({"right":offsetVal},250);
+          this.$epubHtml.css({"right":offsetVal});
        }
         
         console.log("end redraw");
@@ -566,7 +566,7 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         this.$iframe.css("height", this.lastViewPortSize.height + "px");
         this.$epubHtml.css("height", this.lastViewPortSize.height + "px");
                                                        
-        this.paginationInfo.columnWidth = (this.lastViewPortSize.width - this.paginationInfo.columnGap * (this.paginationInfo.visibleColumnCount - 1)) / this.paginationInfo.visibleColumnCount;
+        this.paginationInfo.columnWidth = (this.lastViewPortSize.width - this.paginationInfo.columnGap) / this.paginationInfo.visibleColumnCount;
                                                        
         //we do this because CSS will floor column with by itself if it is not a round number
         this.paginationInfo.columnWidth = Math.floor(this.paginationInfo.columnWidth);
@@ -591,12 +591,13 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
             var diff = d.getTime()-self.timerDebug.getTime();
             console.log("FIRST TIMEOUT "+diff);*/
                 
+            //MAYBE A TROUBLE HERE
             var columnizedContentWidth = self.$epubHtml[0].scrollWidth;
 
             self.paginationInfo.columnCount = Math.round((columnizedContentWidth + self.paginationInfo.columnGap) / (self.paginationInfo.columnWidth + self.paginationInfo.columnGap));
-
+                   
             self.paginationInfo.spreadCount =  Math.ceil(self.paginationInfo.columnCount / self.paginationInfo.visibleColumnCount);
-
+                   
             if(self.paginationInfo.currentSpreadIndex >= self.paginationInfo.spreadCount) {
                 self.paginationInfo.currentSpreadIndex = self.paginationInfo.spreadCount - 1;
             }
@@ -617,9 +618,9 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
                 //console.log("update pagination");
                 self.onPaginationChanged();
                        
-            }, 50);
+            }, 500);
 
-        }, 100);
+        }, 500);
 
     },
 

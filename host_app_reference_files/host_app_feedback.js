@@ -22,7 +22,7 @@
 ReadiumSDK.HostAppFeedback = function() {
 
     ReadiumSDK.on("ReaderInitialized", function(){
-        alert((new Date).getTime() - window.startTime);
+        //alert((new Date).getTime() - window.startTime);
         //ReadiumSDK.reader.on("PaginationChanged", this.onPaginationChanged, this);
     }, this);
 
