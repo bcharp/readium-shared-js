@@ -400,10 +400,10 @@ ReadiumSDK.Views.ReflowableView = Backbone.View.extend({
         var offsetVal =  -this.paginationInfo.pageOffset + "px";
         if(this.spine.isLeftToRight())
         {
-          this.$epubHtml.css({"left":offsetVal});
+          this.$epubHtml.animate({"left":offsetVal}, 250);
         }
        else{
-          this.$epubHtml.css({"right":offsetVal});
+          this.$epubHtml.animate({"right":offsetVal}, 250);
        }
         
         console.log("end redraw");
