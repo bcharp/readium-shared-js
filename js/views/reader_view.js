@@ -267,20 +267,35 @@ ReadiumSDK.Views.ReaderView = Backbone.View.extend({
        if(this.currentView.isReflowable())
        {
            var anc = $("#"+anchor+":last",this.currentView.$epubHtml);
-           var offset = anc.offset();
+           var offset = $("iframe").contents().find("#"+anchor).offset();
            var position = anc.position();
-           
+
            /*console.log("ancre texte : "+ anchor);
            console.log("ancre class : "+ anc.attr('class'));
            console.log("offset left : "+ offset.left);
+           console.log("anchor width : "+ anc.width());
+           console.log("anchor height : "+ anc.height());
+           console.log("body width : "+ $("iframe").contents().find("body").height());
+           console.log("offset top : "+ offset.top);
            console.log("position left : "+ position.left);
+           console.log("position top : "+ position.top);
            console.log("column width : "+this.currentView.paginationInfo.columnWidth);
            console.log("page offset : "+this.currentView.paginationInfo.pageOffset);*/
            
-            page = Math.floor((this.currentView.paginationInfo.pageOffset + offset.left)/(this.currentView.paginationInfo.columnWidth+this.currentView.paginationInfo.columnGap));
-            //console.log("page : "+page);
-                                                   
-           this.currentView.openPageAtIndex(page);
+           page = Math.floor((this.currentView.paginationInfo.pageOffset + offset.left)/(this.currentView.paginationInfo.columnWidth+this.currentView.paginationInfo.columnGap));
+           //console.log("page : "+page);
+           page2 = Math.floor((this.currentView.paginationInfo.pageOffset + offset.left + anc.height())/(this.currentView.paginationInfo.columnWidth+this.currentView.paginationInfo.columnGap+$("iframe").contents().find("body").height()));
+           //console.log("page 2 : "+page2);
+           ratio = anc.height() / $("iframe").contents().find("body").height();
+           //console.log("ratio : "+ratio);
+           //console.log("column count : "+this.currentView.paginationInfo.columnCount);
+           //console.log("ratio count : "+(ratio * this.currentView.paginationInfo.columnCount));
+                                     
+        
+            var newPage = page - Math.round(page * ratio);
+            //console.log(newPage);
+                          
+           this.currentView.openPageAtIndex(newPage);
        }
     },
     /**
